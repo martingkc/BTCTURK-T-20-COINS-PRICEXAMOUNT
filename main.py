@@ -13,6 +13,7 @@ import pandas as pd
 #graphler otomatik olarak filein bulundugu klasore t20-(sayi).png olarak kaydediliyorlar
 #programin tekrarlama suresi sleeptime variableinin degerini degistirerek ayarlanabilir
 #(eger deger dusuk olursa btcturkun ddos korumasi siteye erisimi kisitliyor boyle bir durumda iki dk sonra tekrardan denemek gerekiyor) 
+#eger degerler alinirken terminalde VAL NA degeri cikiyorsa veya index must be an int uyarisi geliyorsa bu ustteki degerden dolayi kaynaklaniyor, bu durumda iki dk bekleyip tekrardan denemeniz gerekiyor
 # calistirmadan once >pip install matplotlib ve >pip install pandas komutlarini kullanarak bu iki packagei indirmek gerekiyor 
 
 
