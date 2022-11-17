@@ -2,6 +2,7 @@ import time, requests, json
 from collections import defaultdict
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.animation import FuncAnimation
 # olcumleri to = su anki zaman ve from = to - olcumsuresi(dk)*60(s)*olcumsayisi olarak aliyorum 
 #bu parametreler sonra url'yi olusturmak icin kullaniliyor 
 #orn: total hesabinda from = to - 60*60*1 60dklikolcumler*60s*1olcum
@@ -47,9 +48,11 @@ def getdf(name):
    
 
 
-sleeptime = 60*60 
-count = 0
-while(True):
+sleeptime = 60*60 #sn olarak aralik belirleme
+
+plt.figure(figsize=(11,11))
+plt.title("BTCTURK T-20 priceXamount TRY")
+def update(i):
     namelab = []
     base = "https://api.btcturk.com"
     method = "/api/v2/server/exchangeinfo"
@@ -82,15 +85,20 @@ while(True):
         df = pd.concat([df, df2], axis=1)
         #OCLHS'de total degerinin ortalama satis ucreti * volum olarak alindigini gordum o yuzden kapanma ve acilma fiyatlarinin basit bir ortalamasini alarak ilerledim 
     print(df) 
-    
-    plt.figure(figsize=(11,11))
+    plt.cla()
+   
     lines = plt.plot( df)
     plt.legend(iter(lines), namelab,loc='upper right')
     
     
     plt.grid()
-    plt.title("BTCTURK T-20 priceXamount TRY")
-    fname = 't20-'+str(count)+'.png'
-    plt.savefig(fname, dpi=100)
-    count += 1
-    time.sleep(sleeptime)
+    plt.tight_layout()
+
+    
+    
+    
+ani = FuncAnimation(plt.gcf(), update, interval=sleeptime*1000) 
+
+plt.tight_layout()
+plt.show()
+
