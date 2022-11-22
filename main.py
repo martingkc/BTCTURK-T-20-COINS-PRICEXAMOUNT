@@ -105,6 +105,6 @@ while (True):
         fig.add_trace(go.Scatter(x=df.index, y=df[col], name=col, customdata=res[col],
                                  hovertemplate='Vol: %{y} <br> Perc: %{customdata}%'))
     fig.show()
-    print(res)
+    time.sleep(sleeptime)
 
 
