@@ -1,8 +1,7 @@
 import time, requests, json
 from collections import defaultdict
-import matplotlib.pyplot as plt
 import pandas as pd
-from matplotlib.animation import FuncAnimation
+import plotly.graph_objects as go
 # olcumleri to = su anki zaman ve from = to - olcumsuresi(dk)*60(s)*olcumsayisi olarak aliyorum 
 #bu parametreler sonra url'yi olusturmak icin kullaniliyor 
 #orn: total hesabinda from = to - 60*60*1 60dklikolcumler*60s*1olcum
