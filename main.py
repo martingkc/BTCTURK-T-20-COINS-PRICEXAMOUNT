@@ -47,58 +47,65 @@ def getdf(name):
     
    
 
+sleeptime = 60 * 60  # sn olarak aralik belirleme
 
-sleeptime = 60*60 #sn olarak aralik belirleme
-
-plt.figure(figsize=(11,11))
-plt.title("BTCTURK T-20 priceXamount TRY")
-def update(i):
+while (True):
+    time.sleep(sleeptime / 60)
     namelab = []
     base = "https://api.btcturk.com"
     method = "/api/v2/server/exchangeinfo"
-    uri = base+method
+    uri = base + method
     names = defaultdict(list)
-    plt.style.use('ggplot')
+
     names.clear()
-    result = requests.get(url =uri)
+    result = requests.get(url=uri)
     result = json.loads(result.text)
     coins = result['data']
+
     for i in coins['symbols']:
         try:
             name = i['name']
-            if i['status']=='TRADING' and name[len(name)-1] == 'Y':
+            if i['status'] == 'TRADING' and name[len(name) - 1] == 'Y':
                 names[name].append(total(name))
-               
+
+
         except:
             print('VAL NA')
-    names = sorted(names.items(), key=lambda x: x[1], reverse=True)   
+
+    names = sorted(names.items(), key=lambda x: x[1], reverse=True)
     print(names)
-    namelab.append(names[0][0])
     df = getdf(names[0][0])
-    
-    df = ((df['o']+df['c'])/2)*df['v']
-    
-    for i in range(1,20): 
-        df2 =getdf(names[i][0])
+    df = vol = ((df['o'] + df['c']) / 2) * df['v']
+
+    df = df.rename(names[0][0])
+
+    for i in range(1, len(names)):
+        df2 = getdf(names[i][0])
         namelab.append(names[i][0])
-        df2 = ((df2['o']+df2['c'])/2)*df2['v']
-        df = pd.concat([df, df2], axis=1)
-        #OCLHS'de total degerinin ortalama satis ucreti * volum olarak alindigini gordum o yuzden kapanma ve acilma fiyatlarinin basit bir ortalamasini alarak ilerledim 
-    print(df) 
-    plt.cla()
-   
-    lines = plt.plot( df)
-    plt.legend(iter(lines), namelab,loc='upper right')
-    
-    
-    plt.grid()
-    plt.tight_layout()
+        df2 = ((df2['o'] + df2['c']) / 2) * df2['v']
+        vol = vol.add(df2, fill_value=0)
+        if i < 20:
+            df = pd.concat([df, df2.rename(names[i][0])], axis=1)
 
-    
-    
-    
-ani = FuncAnimation(plt.gcf(), update, interval=sleeptime*1000) 
+        # OCLHS'de total degerinin ortalama satis ucreti * volum olarak alindigini gordum o yuzden kapanma ve acilma fiyatlarinin basit bir ortalamasini alarak ilerledim
+    col = pd.DataFrame()
+    for i in range(20):
+        col = pd.concat((col, vol), axis=1)
 
-plt.tight_layout()
-plt.show()
+
+
+    df = df.fillna(0)
+    res = np.divide(*df.align(col, axis=0))
+    res = res * 100
+    res.columns = df.columns
+    res.index = (res.index + 1) * 5
+    df.index = (df.index + 1) * 5
+
+    fig = go.Figure()
+    for col in df.columns:
+        fig.add_trace(go.Scatter(x=df.index, y=df[col], name=col, customdata=res[col],
+                                 hovertemplate='Vol: %{y} <br> Perc: %{customdata}%'))
+    fig.show()
+    print(res)
+
 
