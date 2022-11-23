@@ -21,8 +21,6 @@ def getcoins():
 def getdf(name, interval, intervalN):
     base = "https://graph-api.btcturk.com"
     to = int(time.time())
-    # interval = 5
-    # intervalN = 19
     From = to - 60 * interval * intervalN
     method = "/v1/klines/history?from=" + str(From) + "&resolution=" + str(interval) + "&symbol=" + name + "&to=" + str(
         to)
@@ -82,10 +80,10 @@ def update_graph_scatter(n):
     df = vol = ((df['o'] + df['c']) / 2) * df['v']
 
     df = df.rename(names[0][0])
-    print(df)
+
     #coinlerin degerlerinin bulundugu df'in ilk columnunu getdf ile aliyorum sonrasinda asagidaki loop ile diger columnlari y axisi uzerinde sirayla ekliyorum
     for i in range(1, len(names)):
-        print('1')
+
         df2 = getdf(names[i][0], 5, 19)
         df2 = ((df2['o'] + df2['c']) / 2) * df2['v']
         vol = vol.add(df2, fill_value=0) #vol dfsine diger coinlerin total degerlerini topluyorum boylece toplam anlik volumu hesapliyorum
@@ -106,7 +104,7 @@ def update_graph_scatter(n):
     fig = go.Figure()
     for col in df.columns:  #plotly'nin graph object librarysi toplu olarak dfnin her bir columnu icin grafik cizmeme izin vermiyor o yuzden her column icin yeni bir scatter plot ekletiyorum
         fig.add_trace(go.Scatter(x=df.index, y=df[col], name=col, customdata=res[col],
-                                 hovertemplate='Coin: %{name} <br> Val: %{y} <br> Perc: %{customdata}%'))
+                                 hovertemplate='Val: %{y} <br> Perc: %{customdata:.2f}%'))
 
     fig.update_layout(   #grafigin estetik ayarlari
         title="BTCTURK PriceXAmount Graph T-20 Coins",
@@ -119,5 +117,6 @@ def update_graph_scatter(n):
 
 
 app.run_server(debug=True, use_reloader=False)
+
 
 
