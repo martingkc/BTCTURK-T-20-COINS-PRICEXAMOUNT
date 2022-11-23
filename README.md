@@ -11,4 +11,4 @@ calistirmadan once :
 
 dash, numpy ve plotly packagelerini indirdiginizden emin olun 
 
-Bazen BTCTurk'un serverlarindan dolayi "https://api.btcturk.com"dan veri alinamiyor bundan dolayi terminalde VAL NA degerini goreceksiniz bu gibi durumlarda 5dk bekleyip tekrar denemeniz gerekiyor. 
+Bazen BTCTurk'un serverlarindan dolayi api.btcturk.com'dan veri alinamiyor bundan dolayi terminalde VAL NA degerini goreceksiniz bu gibi durumlarda 5dk bekleyip tekrar denemeniz gerekiyor. 
