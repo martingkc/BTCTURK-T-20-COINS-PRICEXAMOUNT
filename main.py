@@ -95,15 +95,16 @@ def update_graph_scatter(n):
         col = pd.concat((col, vol), axis=1)
 
     df = df.fillna(0) #bazen btcturk degerleri NAN olarak veriyor bu da bazen asagidaki divide fonksiyonunun hata vermesine sebep oluyor bunu engellemek icin df nin nan olan degerlerini 0 ile degistiriyorum
+    df = df.loc[::-1]
+    col = col.loc[::-1]
     res = np.divide(*df.align(col, axis=0))  #iki dfyi indexleri uzerinde zorla align ettiriyorum bu adimi atlayinca divide fonksiyonu bazen sacmalayabiliyor
     res = res * 100 #res df'sinde her coinin anlik volumleri var
     res.columns = df.columns #plotlynin customdata ozelliginin dfin her bir elementi icin resden karsiligini vermesi icin indexlerini ve column isimlerini esitliyorum
-    res.index = (res.index + 1) * 5
-    df.index = (df.index + 1) * 5
-
+    df.index = (df.index +1)* 5
+    res.index = df.index
     fig = go.Figure()
     for col in df.columns:  #plotly'nin graph object librarysi toplu olarak dfnin her bir columnu icin grafik cizmeme izin vermiyor o yuzden her column icin yeni bir scatter plot ekletiyorum
-        fig.add_trace(go.Scatter(x=df.index, y=df[col], name=col, customdata=res[col],
+        fig.add_trace(go.Scatter(x=df.index[::-1] , y=df[col], name=col, customdata=res[col],
                                  hovertemplate='Val: %{y} <br> Perc: %{customdata:.2f}%'))
 
     fig.update_layout(   #grafigin estetik ayarlari
@@ -111,10 +112,13 @@ def update_graph_scatter(n):
         xaxis_title="Time [min]",
         yaxis_title="Price x Amount",
         legend_title="Coins",
+        xaxis_tickprefix = '-'
     )
+    fig.update_xaxes(autorange="reversed")
+
+    
 
     return fig
-
 
 app.run_server(debug=True, use_reloader=False)
 
